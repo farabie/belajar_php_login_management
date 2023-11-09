@@ -1,10 +1,8 @@
 <?php 
 
-namespace BieProject\Belajar\PHP\MVC;
+namespace BieProject\Belajar\PHP\MVC\Test;
 
 use PHPUnit\Framework\TestCase;
-
-require_once __DIR__ . "/vendor/autoload.php";
 
 class RegexTest extends TestCase {
     public function TestRege() {
