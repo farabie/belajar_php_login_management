@@ -8,7 +8,7 @@ function getDatabaseConfig(): array {
                 "username"=> "root",
                 "password"=> "",
             ],
-            "production" => [
+            "prod" => [
                 "url" => "mysql:host=localhost:3306;dbname=php_login_management",
                 "username" => "root",
                 "password" => "",
