@@ -12,9 +12,9 @@ class UserRepository {
     }
 
     public function save(User $user): User {
-        $statement = $this->connection->prepare("INSERT INTO users(id, name, password, email, adress) VALUES(?, ?, ?, ?, ?)");
+        $statement = $this->connection->prepare("INSERT INTO users(id, name, password, school, address) VALUES(?, ?, ?, ?, ?)");
         $statement->execute([
-            $user-> id, $user->name, $user->password, $user->email, $user->address,
+            $user-> id, $user->name, $user->password, $user->school, $user->address,
         ]);
         return $user;
     }
@@ -30,7 +30,7 @@ class UserRepository {
 
     public function findById(string $id): ?User
     {
-        $statement = $this->connection->prepare("SELECT id, name, password FROM users WHERE id = ?");
+        $statement = $this->connection->prepare("SELECT id, name, password, school, address FROM users WHERE id = ?");
         $statement->execute([$id]);
 
         try {
@@ -39,7 +39,7 @@ class UserRepository {
                 $user->id = $row['id'];
                 $user->name = $row['name'];
                 $user->password = $row['password'];
-                $user->email = $row['email'];
+                $user->school = $row['school'];
                 $user->address = $row['address'];
                 return $user;
             } else {

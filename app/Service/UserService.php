@@ -33,7 +33,7 @@ class UserService
             $user->id = $request->id;
             $user->name = $request->name;
             $user->password = password_hash($request->password, PASSWORD_BCRYPT);
-            $user->email = $request->email;
+            $user->school = $request->school;
             $user->address = $request->address;
 
             $this->userRepository->save($user);
@@ -52,12 +52,10 @@ class UserService
     private function validateUserRegistrationRequest(UserRegisterRequest $request)
     {
         if (
-            $request->id == null || $request->name == null || $request->password == null ||
-            $request->address == null || $request->email == null || trim($request->id) == ""
-            || trim($request->name) == "" || trim($request->password) == "" || trim($request->email)
-            == "" || trim($request->address)
+            $request->id == null || $request->name == null || $request->password == null || $request->school = null || trim($request->id) == "" 
+            || trim($request->name) == "" || trim($request->password) == "" || trim($request->address) == ""
         ) {
-            throw new validationException("Id, Name, Password, Email, Adress can not blank");
+            throw new ValidationException("Id, Name, Password, school, Adress can not blank");
         }
     }
 }

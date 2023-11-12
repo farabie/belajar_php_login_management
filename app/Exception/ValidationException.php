@@ -2,7 +2,7 @@
 
 namespace BieProject\Belajar\PHP\LoginManage\Exception;
 
-class validationException extends \Exception {
+class ValidationException extends \Exception {
     
 }
 

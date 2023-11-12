@@ -10,7 +10,7 @@ class UserRegisterRequest {
 
     public ?string $password = null;
 
-    public ?string $email = null;
+    public ?string $school = null;
 
     public ?string $address = null;
 }
