@@ -5,6 +5,8 @@ namespace BieProject\Belajar\PHP\LoginManage\Service;
 use BieProject\Belajar\PHP\LoginManage\Config\Database;
 use BieProject\Belajar\PHP\LoginManage\Domain\User;
 use BieProject\Belajar\PHP\LoginManage\Exception\validationException;
+use BieProject\Belajar\PHP\LoginManage\Model\UserLoginRequest;
+use BieProject\Belajar\PHP\LoginManage\Model\UserLoginResponse;
 use BieProject\Belajar\PHP\LoginManage\Model\UserRegisterRequest;
 use BieProject\Belajar\PHP\LoginManage\Model\UserRegisterResponse;
 use BieProject\Belajar\PHP\LoginManage\Repository\UserRepository;
@@ -49,13 +51,41 @@ class UserService
         }
     }
 
+
     private function validateUserRegistrationRequest(UserRegisterRequest $request)
     {
         if (
-            $request->id == null || $request->name == null || $request->password == null || $request->school = null || trim($request->id) == "" 
+            $request->id == null || $request->name == null || $request->password == null || $request->school = null || trim($request->id) == ""
             || trim($request->name) == "" || trim($request->password) == "" || trim($request->address) == ""
         ) {
             throw new ValidationException("Id, Name, Password, school, Adress can not blank");
+        }
+    }
+
+
+    public function login(UserLoginRequest $request):UserLoginResponse {
+        $this->validateUserLoginRequest($request);
+
+        $user = $this->userRepository->findById($request->id);
+        if($user == null) {
+            throw new ValidationException("Id or Password is wrong");
+        }
+
+        if(password_verify($request->password, $user->password)) {
+            $response = new UserLoginResponse();
+            $response->user = $user;
+            return $response;
+        }else {
+            throw new ValidationException("Id or Password is worng");
+        }
+    }
+    private function validateUserLoginRequest(UserLoginRequest $request)
+    {
+        if (
+            $request->id == null ||  $request->password == null || trim($request->id) == ""
+            || trim($request->password) == ""
+        ) {
+            throw new ValidationException("Id, Password can not blank");
         }
     }
 }
