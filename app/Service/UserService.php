@@ -7,6 +7,8 @@ use BieProject\Belajar\PHP\LoginManage\Domain\User;
 use BieProject\Belajar\PHP\LoginManage\Exception\validationException;
 use BieProject\Belajar\PHP\LoginManage\Model\UserLoginRequest;
 use BieProject\Belajar\PHP\LoginManage\Model\UserLoginResponse;
+use BieProject\Belajar\PHP\LoginManage\Model\UserProfileUpdateRequest;
+use BieProject\Belajar\PHP\LoginManage\Model\UserProfileUpdateResponse;
 use BieProject\Belajar\PHP\LoginManage\Model\UserRegisterRequest;
 use BieProject\Belajar\PHP\LoginManage\Model\UserRegisterResponse;
 use BieProject\Belajar\PHP\LoginManage\Repository\UserRepository;
@@ -86,6 +88,38 @@ class UserService
             || trim($request->password) == ""
         ) {
             throw new ValidationException("Id, Password can not blank");
+        }
+    }
+
+    public function updateProfile(UserProfileUpdateRequest $request): UserProfileUpdateResponse {
+        $this->validateUserProfileUpdateRequest($request);
+
+        try{
+            Database::beginTransaction();
+
+            $user = $this->userRepository->findById($request->id);
+            if($user == null) {
+                throw new ValidationException("User is not found");
+            }
+
+            $user->name = $request->name;
+            $this->userRepository->update($user);
+
+            Database::commitTransaction();
+
+            $response = new UserProfileUpdateResponse();
+            $response->user = $user;
+            return $response;
+            
+        }catch(\Exception $exception) {
+            Database::rollbackTransaction();
+            throw $exception;
+        }
+    }
+
+    private function validateUserProfileUpdateRequest(UserProfileUpdateRequest $request) {
+        if($request->id == null || $request->name == null || trim($request-> id) == "" || trim($request->name) == "" ) {
+            throw new validationException("Id, Name can not blank");
         }
     }
 }
