@@ -6,6 +6,7 @@ use BieProject\Belajar\PHP\LoginManage\APP\View;
 use BieProject\Belajar\PHP\LoginManage\Config\Database;
 use BieProject\Belajar\PHP\LoginManage\Exception\validationException;
 use BieProject\Belajar\PHP\LoginManage\Model\UserLoginRequest;
+use BieProject\Belajar\PHP\LoginManage\Model\UserProfileUpdateRequest;
 use BieProject\Belajar\PHP\LoginManage\Model\UserRegisterRequest;
 use BieProject\Belajar\PHP\LoginManage\Repository\SessionRepository;
 use BieProject\Belajar\PHP\LoginManage\Repository\UserRepository;
@@ -84,6 +85,43 @@ class UserController {
         $this->sessionService->destroy();
         View::redirect('/');
     }
+
+    //Untuk tampilan view
+    public function updateProfile() {
+        $user = $this->sessionService->current();
+
+        View::render('User/profile', [
+            "title" => "Update User Profile",
+            "user" => [
+                "id" => $user->id,
+                "name" => $user->name,
+            ]
+        ]);
+    }
+
+    public function postUpdateProfile() {
+        $user = $this->sessionService->current();
+
+        $request = new UserProfileUpdateRequest();
+        $request->id = $user->id;
+        $request->name = $_POST['name'];
+
+        try{
+            $this->userService->updateProfile($request);
+            View::redirect('/');
+        } catch(validationException $exception) {
+            View::render('User/Profile', [
+                "title" => "Update user Profile",
+                "error" => $exception->getMessage(),
+                "user" => [
+                    "id" => $user->id,
+                    "name"=> $_POST['name'],
+                ]
+            ]);
+        }
+    }
+
+    //Untuk action dari fungsi update profile
 }
 
 

@@ -110,7 +110,7 @@ class UserService
             $response = new UserProfileUpdateResponse();
             $response->user = $user;
             return $response;
-            
+
         }catch(\Exception $exception) {
             Database::rollbackTransaction();
             throw $exception;
