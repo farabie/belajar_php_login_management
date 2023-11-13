@@ -7,17 +7,23 @@ use BieProject\Belajar\PHP\LoginManage\Config\Database;
 use BieProject\Belajar\PHP\LoginManage\Exception\validationException;
 use BieProject\Belajar\PHP\LoginManage\Model\UserLoginRequest;
 use BieProject\Belajar\PHP\LoginManage\Model\UserRegisterRequest;
+use BieProject\Belajar\PHP\LoginManage\Repository\SessionRepository;
 use BieProject\Belajar\PHP\LoginManage\Repository\UserRepository;
+use BieProject\Belajar\PHP\LoginManage\Service\SessionService;
 use BieProject\Belajar\PHP\LoginManage\Service\UserService;
 
 class UserController {
     private UserService $userService;
+    private SessionService $sessionService; 
     
 
     public function __construct() {
         $connection = Database::getConnection();
         $userRepository = new UserRepository($connection);
         $this->userService = new UserService($userRepository);
+
+        $sessionRepository = new SessionRepository($connection);
+        $this->sessionService = new SessionService($sessionRepository, $userRepository);
     }
 
 
@@ -62,7 +68,8 @@ class UserController {
         $request->password = $_POST["password"];
 
         try {
-            $request = $this->userService->login($request);
+            $response = $this->userService->login($request);
+            $this->sessionService->create($response->user->id);
             View::redirect('/');
         }catch(ValidationException $exception) {
             View::render('User/login', [

@@ -14,12 +14,12 @@ class SessionRepository {
     }
 
     public function save(Session $session) {
-        $statement = $this->connection->prepare("INSERT INTO session(id, user_id) VALUES(?, ?)");
+        $statement = $this->connection->prepare("INSERT INTO sessions(id, user_id) VALUES(?, ?)");
         $statement->execute([$session->id, $session->userId]);
         return $session;
     }
 
-    public function findById(string $id): Session {
+    public function findById(string $id): ?Session {
         $statement = $this->connection->prepare("SELECT id, user_id from sessions WHERE id = ?");
         $statement->execute([$id]);
 
