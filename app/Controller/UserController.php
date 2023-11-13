@@ -78,6 +78,12 @@ class UserController {
             ]);
         }
     }
+
+    //Untuk Fungsi logout
+    public function logout() {
+        $this->sessionService->destroy();
+        View::redirect('/');
+    }
 }
 
 
