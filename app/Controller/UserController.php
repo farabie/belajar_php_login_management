@@ -6,6 +6,7 @@ use BieProject\Belajar\PHP\LoginManage\APP\View;
 use BieProject\Belajar\PHP\LoginManage\Config\Database;
 use BieProject\Belajar\PHP\LoginManage\Exception\validationException;
 use BieProject\Belajar\PHP\LoginManage\Model\UserLoginRequest;
+use BieProject\Belajar\PHP\LoginManage\Model\UserPasswordUpdateRequest;
 use BieProject\Belajar\PHP\LoginManage\Model\UserProfileUpdateRequest;
 use BieProject\Belajar\PHP\LoginManage\Model\UserRegisterRequest;
 use BieProject\Belajar\PHP\LoginManage\Repository\SessionRepository;
@@ -99,6 +100,7 @@ class UserController {
         ]);
     }
 
+    //Untuk action update profile
     public function postUpdateProfile() {
         $user = $this->sessionService->current();
 
@@ -121,7 +123,38 @@ class UserController {
         }
     }
 
-    //Untuk action dari fungsi update profile
+    //Untuk view dari update password
+    public function updatePassword() {
+        $user = $this->sessionService->current();
+        View::render('User/password', [
+            "title" => "Update user password",
+            "user" => [
+                "id" => $user->id,
+            ]
+        ]);
+    }
+
+    //Untuk action dari update password
+    public function postUpdatePassword() {
+        $user = $this->sessionService->current();
+        $request = new UserPasswordUpdateRequest();
+        $request->id = $user->id;
+        $request->oldPassword = $_POST["oldPassword"];
+        $request->newPassword = $_POST["newPassword"];
+
+        try{
+            $this->userService->updatePassword($request);
+            View::redirect("/");
+        }catch(validationException $exception) {
+            View::render('User/password', [
+                "title" => "Update user password",
+                "error" => $exception->getMessage(),
+                "user" => [
+                    "id" => $user->id,
+                ]
+            ]);
+        }
+    }
 }
 
 
