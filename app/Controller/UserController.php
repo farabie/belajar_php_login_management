@@ -5,6 +5,7 @@ namespace BieProject\Belajar\PHP\LoginManage\Controller;
 use BieProject\Belajar\PHP\LoginManage\APP\View;
 use BieProject\Belajar\PHP\LoginManage\Config\Database;
 use BieProject\Belajar\PHP\LoginManage\Exception\validationException;
+use BieProject\Belajar\PHP\LoginManage\Model\UserLoginRequest;
 use BieProject\Belajar\PHP\LoginManage\Model\UserRegisterRequest;
 use BieProject\Belajar\PHP\LoginManage\Repository\UserRepository;
 use BieProject\Belajar\PHP\LoginManage\Service\UserService;
@@ -42,6 +43,30 @@ class UserController {
         }catch(ValidationException $exception) {
             View::render('User/register', [
                 'title' => 'Register new User',
+                'error' => $exception->getMessage()
+            ]);
+        }
+    }
+
+    //Untuk tampilan viewnya
+    public function login() {
+        View::render('User/login', [
+            "title" => "Login Page"
+        ]);
+    }
+
+    //Untuk actionnya
+    public function postLogin() {
+        $request = new UserLoginRequest();
+        $request->id = $_POST["id"];
+        $request->password = $_POST["password"];
+
+        try {
+            $request = $this->userService->login($request);
+            View::redirect('/');
+        }catch(ValidationException $exception) {
+            View::render('User/login', [
+                'title' => 'Login User',
                 'error' => $exception->getMessage()
             ]);
         }
